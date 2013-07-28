@@ -1,15 +1,16 @@
 ;
-; _printf: Basic layer for all printf type functions.
+; _printf: Basic layer for all printf-type functions.
 ;
-; Ullrich von Bassewitz, 2000-10-21
+; 2000-10-21, Ullrich von Bassewitz
+; 2013-07-28, Greg King
 ;
-                                   
+
         .include        "zeropage.inc"
 
         .export         __printf
 
         .import         popax, pushax, pusheax, decsp6, push1, axlong, axulong
-        .import         _ltoa, _ultoa
+        .import         negax, _ltoa, _ultoa
         .import         _strlower, _strlen
 
         .macpack        generic
@@ -429,6 +430,10 @@ ReadWidth:
         bne     @L1
         jsr     IncFormatPtr
         jsr     GetIntArg               ; Width is an additional argument
+        cpx     #$80                    ; Is it negative?
+        blt     @L2
+        stx     LeftJust                ; Yes, split into flag ...
+        jsr     negax                   ; ... and positive number
         jmp     @L2
 
 @L1:    jsr     ReadInt                 ; Read integer from format string...
@@ -450,7 +455,9 @@ ReadPrec:
         bne     @L1
         jsr     IncFormatPtr            ; Skip the '*'
         jsr     GetIntArg               ; Get integer argument
-        jmp     @L2
+        cpx     #$80
+        bge     ReadMod                 ; Ignore negative precisions
+        blt     @L2                     ; Branch always
 
 @L1:    jsr     ReadInt                 ; Read integer from format string
 @L2:    sta     Prec
@@ -577,10 +584,10 @@ CheckOctal:
         ora     sreg+1
         ora     Prec
         ora     Prec+1                  ; Check if value or Prec != 0
-        beq     @Oct1
+        bze     @Oct0
         lda     #'0'
         jsr     PutBuf
-        pla                             ; Restore low byte
+@Oct0:  pla                             ; Restore low byte
 
 @Oct1:  ldy     #8                      ; Load base
         jsr     ltoa                    ; Push arguments, call _ltoa
