@@ -1,7 +1,8 @@
 ;
-; Stefan Haubenthal, 2009-07-27
-; Ullrich von Bassewitz, 2009-09-24
-; Oliver Schmidt, 2018-08-14
+; 2009-07-27, Stefan Haubenthal
+; 2009-09-24, Ullrich von Bassewitz
+; 2013-12-26, Greg King
+; 2018-08-14, Oliver Schmidt
 ;
 ; int clock_gettime (clockid_t clk_id, struct timespec *tp);
 ;
@@ -16,7 +17,6 @@
 
 
 ;----------------------------------------------------------------------------
-.code
 
 .proc   _clock_gettime
 
@@ -24,16 +24,30 @@
         jsr     pushax
         jsr     pushax
 
+; Get the hour, and freeze the output registers (the time components will stay
+; co-ordinated).
+
         ldy     #CIA::TODHR
         lda     (cia2),y
+        tax
+        lda     #0
+        cpx     #$12                    ; Shift 12 AM to zero
+        beq     is0
+
+; Convert from 12-hour format to 24-hour format.
+
+        txa
         bpl     AM
         and     #%01111111
+        cmp     #$12                    ; Don't shift 12 PM
+        beq     AM
         sed
         clc
         adc     #$12
         cld
+
 AM:     jsr     BCD2dec
-        sta     TM + tm::tm_hour
+is0:    sta     TM + tm::tm_hour
         ldy     #CIA::TODMIN
         lda     (cia2),y
         jsr     BCD2dec
@@ -96,12 +110,12 @@ AM:     jsr     BCD2dec
 ; TM struct with date set to 1970-01-01
 .data
 
-TM:     .word           0       ; tm_sec
-        .word           0       ; tm_min
-        .word           0       ; tm_hour
-        .word           1       ; tm_mday
-        .word           0       ; tm_mon
-        .word           70      ; tm_year
-        .word           0       ; tm_wday
-        .word           0       ; tm_yday
-        .word           0       ; tm_isdst
+TM:     .word   0               ; tm_sec
+        .word   0               ; tm_min
+        .word   0               ; tm_hour
+        .word   1               ; tm_mday
+        .word   1 - 1           ; tm_mon
+        .word   1970 - 1900     ; tm_year
+        .word   0               ; tm_wday
+        .word   0               ; tm_yday
+        .word   .loword(-1)     ; tm_isdst

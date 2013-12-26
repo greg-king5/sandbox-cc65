@@ -1,6 +1,7 @@
 ;
-; Stefan Haubenthal, 27.7.2009
-; Oliver Schmidt, 14.8.2018
+; 2009-07-27, Stefan Haubenthal
+; 2013-12-26, Greg King
+; 2018-08-14, Oliver Schmidt
 ;
 ; int clock_gettime (clockid_t clk_id, struct timespec *tp);
 ;
@@ -12,26 +13,36 @@
         .constructor    inittime
         .importzp       sreg, tmp1, tmp2
         .import         pushax, pusheax, tosmul0ax, steaxspidx, incsp1, return0
-        .import         _get_tv, _get_ostype
+        .import         _get_ostype
 
 
 ;----------------------------------------------------------------------------
-.code
 
 .proc   _clock_gettime
 
         jsr     pushax
         jsr     pushax
 
-        lda     CIA1_TODHR
+; Get the hour, and freeze the output registers (the time components will stay
+; co-ordinated).
+        ldx     CIA1_TODHR
+        lda     #0
+        cpx     #$12                    ; Shift 12 AM to zero
+        beq     is0
+
+; Convert from 12-hour format to 24-hour format.
+        txa
         bpl     AM
         and     #%01111111
+        cmp     #$12                    ; Don't shift 12 PM
+        beq     AM
         sed
         clc
         adc     #$12
         cld
+
 AM:     jsr     BCD2dec
-        sta     TM + tm::tm_hour
+is0:    sta     TM + tm::tm_hour
         lda     CIA1_TODMIN
         jsr     BCD2dec
         sta     TM + tm::tm_min
@@ -84,6 +95,7 @@ AM:     jsr     BCD2dec
 
 .endproc
 
+
 ;----------------------------------------------------------------------------
 ; Constructor that writes to the 1/10 sec register of the TOD to kick it
 ; into action. If this is not done, the clock hangs. We will read the register
@@ -111,12 +123,12 @@ AM:     jsr     BCD2dec
 ; TM struct with date set to 1970-01-01
 .data
 
-TM:     .word           0       ; tm_sec
-        .word           0       ; tm_min
-        .word           0       ; tm_hour
-        .word           1       ; tm_mday
-        .word           0       ; tm_mon
-        .word           70      ; tm_year
-        .word           0       ; tm_wday
-        .word           0       ; tm_yday
-        .word           0       ; tm_isdst
+TM:     .word   0               ; tm_sec
+        .word   0               ; tm_min
+        .word   0               ; tm_hour
+        .word   1               ; tm_mday
+        .word   1 - 1           ; tm_mon
+        .word   1970 - 1900     ; tm_year
+        .word   0               ; tm_wday
+        .word   0               ; tm_yday
+        .word   .loword(-1)     ; tm_isdst
