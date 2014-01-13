@@ -1,6 +1,6 @@
 ;
 ; 2009-07-27, Stefan Haubenthal
-; 2013-12-26, Greg King
+; 2013-12-27, Greg King
 ; 2018-08-14, Oliver Schmidt
 ;
 ; int clock_gettime (clockid_t clk_id, struct timespec *tp);
@@ -9,6 +9,7 @@
         .include        "time.inc"
         .include        "c128.inc"
         .include        "get_tv.inc"
+        .macpack        generic
 
         .constructor    inittime
         .importzp       sreg, tmp1, tmp2
@@ -41,7 +42,15 @@
         cld
 
 AM:     jsr     BCD2dec
-is0:    sta     TM + tm::tm_hour
+is0:    cmp     TM + tm::tm_hour
+        bge     today
+
+; The new time is less than the old time; therefore, the clock must have gone
+; past midnight.  Add 24 hours; mktime() will correct the hour and the date.
+
+        ;clc
+        adc     #24
+today:  sta     TM + tm::tm_hour
         lda     CIA1_TODMIN
         jsr     BCD2dec
         sta     TM + tm::tm_min
