@@ -29,7 +29,7 @@ int next;		/* index of next free entry in words */
 
 #else
 
-int err(char *s);
+void err(char *s);
 int getword(char *buf);
 void tprint(struct node *tree);
 struct node *lookup(char *word, struct node **p);
@@ -40,9 +40,9 @@ int isletter(char c);
 
 /* err - print error message s and die	*/
 #ifndef NO_OLD_FUNC_DECL
-err(s) char *s; {
+void err(s) char *s; {
 #else
-int err(char *s) {
+void err(char *s) {
 #endif
 	printf("? %s\n", s);
 	exit(1);

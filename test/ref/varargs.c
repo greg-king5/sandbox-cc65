@@ -90,7 +90,7 @@ static char string[0x100];
     va_end(ap);
 }
 
-int main(int argc,char **argv) {
+int main(void) {
     printf("varargs test\n");
 
     printf("\nchk0/0:\n");chk0("chk0 %s","arg0");

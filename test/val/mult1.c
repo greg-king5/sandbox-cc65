@@ -30,7 +30,7 @@ void m1(void)
 
   c2 = c1 *c3;     /* char = char * char */
 
-  uc1= uc1*5;      /* uchar = uchar * lit *
+  uc1= uc1*5;      /* uchar = uchar * lit */
   uc2=uc1*uc3;     /* uchar = uchar * uchar */
 
   if(c2 != 25)

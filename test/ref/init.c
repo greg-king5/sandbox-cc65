@@ -12,9 +12,9 @@ typedef struct { int codes[3]; char name[6]; } Word;
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
 
 #ifdef NO_OLD_FUNC_DECL
-f();
+void f(void);
 void g(Word *p);
-h();
+void h(void);
 #else
 f();
 g();
@@ -45,7 +45,7 @@ Word words[] = {
 int x[][5] = { {1, 2, 3, 4, 0 }, { 5, 6 }, { 7 } };
 int *y[] = { x[0], x[1], x[2], 0 };
 
-main()
+int main(void)
 {
 	int i, j;
 
@@ -59,7 +59,7 @@ main()
 	return 0;
 }
 
-f() {
+void f(void) {
 	static char *keywords[] = {"if", "for", "else", "while", 0, };
 	char **p;
 
@@ -74,7 +74,7 @@ g(p)
 Word *p;
 #endif
 {
-	int i;
+	unsigned i;
 
 	for ( ; p->codes[0]; p++) {
 		for (i = 0; i < sizeof p->codes/sizeof(p->codes[0]); i++)
@@ -84,9 +84,9 @@ Word *p;
 	h();
 }
 
-h()
+void h(void)
 {
-	int i;
+	unsigned i;
 
 	for (i = 0; i < sizeof(words)/sizeof(Word); i++)
 		printf("%d %d %d %s\n", words[i].codes[0],

@@ -7,13 +7,13 @@
 #include <stdio.h>
 
 #ifndef NO_NEW_PROTOTYPES_FOR_OLD_FUNC_DECL
-int f(void);
-int g(int x[][4],int *y[]);
+void f(void);
+void g(int x[][4],int *y[]);
 #endif
 
 int x[3][4], *y[3];
 
-main() {
+int main(void) {
 	int z[3][4];
 	int i, j, *p;
 
@@ -33,7 +33,7 @@ main() {
 	return 0;
 }
 
-f() {
+void f(void) {
 	int i, j;
 
 	for (i = 0; i < 3; i++)
@@ -46,7 +46,7 @@ f() {
 	printf("\n");
 }
 
-g(x, y)
+void g(x, y)
 int x[][4], *y[];
 {
 	int i, j;

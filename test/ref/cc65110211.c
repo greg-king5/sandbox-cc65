@@ -20,7 +20,7 @@ int test1(void)
     int res;
     unsigned char *p;
 
-    p = upper;
+    p = (unsigned char *)upper;
     res = 0;
 
     while(*p) {
@@ -39,7 +39,7 @@ int test2(void)
     int res;
     unsigned char *p;
 
-    p = upper;
+    p = (unsigned char *)upper;
     res = 0;
 
     while(*p) {
@@ -57,7 +57,7 @@ int test3(void)
     int res;
     unsigned char *p;
 
-    p = upper;
+    p = (unsigned char *)upper;
     res = 0;
 
     while(*p) {
@@ -70,7 +70,7 @@ int test3(void)
     return res;
 }
 
-int main(int n,char **args)
+int main(void)
 {
     test1();
     test2();

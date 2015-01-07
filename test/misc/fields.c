@@ -57,11 +57,11 @@ int i = 16;
 #endif
 
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
-f1(struct baz *p);
-f2(struct baz *p);
+int f1(struct baz *p);
+void f2(struct baz *p);
 #endif
 
-main()
+int main(void)
 {
 	printf("x = %d b:%d %d %d %d c:%d\n", x.a, x.b, x.x, x.y, x.z, x.c);
 	printf("y = %d b:%d c:%d\n", y.a, y.b, y.c);
@@ -79,14 +79,15 @@ main()
 	return 0;
 }
 
-f1(struct baz *p) {
+int f1(struct baz *p) {
 	p->a = p->b = 0;
 	if (p->b)
 		printf("p->b != 0!\n");
 	p->a = 0x3; p->b = 0xf;
 	printf("p->a = 0x%x, p->b = 0x%x\n", p->a, p->b);
+	return 1;
 }
-f2(struct baz *p) {
+void f2(struct baz *p) {
 	p->a = (i==0);
 	p->b = (f1(p),0);
 }

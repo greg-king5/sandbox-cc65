@@ -57,7 +57,11 @@ char o;
 	#endif
 }
 
+#ifdef USECMDLINE
 int main(int argc,char **argv)
+#else
+int main(void)
+#endif
 {
 	#ifdef USECMDLINE
 	if (argc < 2) {

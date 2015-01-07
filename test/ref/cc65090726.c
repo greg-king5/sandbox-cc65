@@ -17,7 +17,7 @@ typedef RecordType *RecordPtr;
 
 void Proc3(RecordPtr *PtrParOut)
 {
-	/* whatever */
+	(void)(*PtrParOut)->PtrComp;
 }
 
 void Proc1(RecordPtr PtrParIn)

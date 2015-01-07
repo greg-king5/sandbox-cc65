@@ -283,14 +283,7 @@ int one();
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

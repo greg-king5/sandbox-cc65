@@ -63,7 +63,7 @@ s26(pd0)
 struct defs *pd0;
 {
 #else
-s26(struct defs *pd0) {
+int s26(struct defs *pd0) {
 #endif
    static char qs26[8] = "s26    ";
    char *ps, *pt;
@@ -315,14 +315,7 @@ int s72(struct defs *pd0){
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

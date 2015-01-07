@@ -14,7 +14,7 @@ typedef struct TypB {
 sTypB Bs[10];
 TypA * APtr;
 
-int main(int argc, char* argv[])
+int main(void)
 {
 	Bs[7].Data[1][2]=11;
 	APtr=&(Bs[7].Data[1]);

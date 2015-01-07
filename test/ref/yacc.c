@@ -70,7 +70,7 @@ int yytchar;
 #define yyout outfile
 
 extern int yylineno;
-struct yysvf 
+struct yysvf
 {
 	struct yywork *yystoff;
 	struct yysvf *yyother;
@@ -83,14 +83,14 @@ extern struct yysvf yysvec[], *yybgin;
 # define YYNEWLINE ('\n')
 
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
-yylook();
-int yywrap();
-yyparse();
-yyerror(char *s);
-yyunput(int c);
-yyoutput(int c);
-yyinput();
-yyback(int *p,int m);
+int yylook(void);
+int yywrap(void);
+int yyparse(void);
+void yyerror(char *s);
+void yyunput(int c);
+void yyoutput(int c);
+int yyinput(void);
+int yyback(int *p,int m);
 #endif
 
 #ifdef YYDEBUG
@@ -111,10 +111,10 @@ void printchar(char *name,int ch)
 }
 #endif
 
-yylex()
+int yylex(void)
 {
 int nstr;
-extern int yyprevious;
+/* extern int yyprevious; */
 
 #ifdef YYDEBUG
 	fprintf(yyout,"yylex()\n");
@@ -125,7 +125,7 @@ extern int yyprevious;
 #ifdef YYDEBUG
 	fprintf(yyout,"yylex: nstr=%d\n",nstr);
 #endif
-yyfussy:
+/* yyfussy: */
 	switch(nstr)
 	{
 		case 0:
@@ -150,7 +150,7 @@ yyfussy:
 	}
 
 	}
-	
+
 #ifdef YYDEBUG
 	fprintf(yyout,"yylex: return 0\n");
 #endif
@@ -164,9 +164,9 @@ int yyvstop[] =
 };
 
 # define YYTYPE char
-struct yywork 
-{ 
-	YYTYPE verify, advance; 
+struct yywork
+{
+	YYTYPE verify, advance;
 } yycrank[] =
 {
 	{0,0},	{0,0},	{1,3},	{0,0},
@@ -178,12 +178,12 @@ struct yywork
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{0,0},	{0,0},	{0,0},	{0,0},
- 
+
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{0,0},	{0,0},	{0,0},	{0,0},
- 
+
 	{0,0},	{1,5},	{5,7},	{5,7},
 	{5,7},	{5,7},	{5,7},	{5,7},
 	{5,7},	{5,7},	{5,7},	{5,7},
@@ -193,17 +193,17 @@ struct yywork
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{0,0},	{0,0},	{0,0},
- 
+
 	{0,0},	{0,0},	{0,0},	{0,0},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
- 
+
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{0,0},	{0,0},
- 
+
 	{0,0},	{0,0},	{6,8},	{0,0},
 	{6,8},	{6,8},	{6,8},	{6,8},
 	{6,8},	{6,8},	{6,8},	{6,8},
@@ -240,7 +240,7 @@ struct yywork
 };
 
 /*
-struct yysvf 
+struct yysvf
 {
 	struct yywork *yystoff;
 	struct yysvf *yyother;
@@ -281,27 +281,27 @@ char yymatch[] =
 #endif
 	01  ,01  ,01  ,01  ,01  ,01  ,01  ,01  ,
 	01  ,01  ,01  ,01  ,01  ,01  ,01  ,01  ,
- 
+
 	011 ,01  ,01  ,01  ,01  ,01  ,01  ,01  ,
 	01  ,01  ,01  ,01  ,01  ,01  ,01  ,01  ,
- 
+
 	'0' ,'0' ,'0' ,'0' ,'0' ,'0' ,'0' ,'0' ,
 	'0' ,'0' ,01  ,01  ,01  ,01  ,01  ,01  ,
- 
+
 /* 0x40 (ascii) @A... (petscii) @a... */
 	01  ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
- 
+
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,01  ,01  ,01  ,01  ,'A' ,
- 
+
 /* 0x60 (ascii) @a... */
 	01  ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
- 
+
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,01  ,01  ,01  ,01  ,01  ,
- 
+
 #ifdef CHARSETHACK
 /* 0x80 */
  	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
@@ -312,10 +312,10 @@ char yymatch[] =
 /* 0xc0 (petcii) @A... */
 	01  ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
- 
+
 	'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,'A' ,
 	'A' ,'A' ,'A' ,01  ,01  ,01  ,01  ,01  ,
- 
+
  	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
  	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
  	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
@@ -342,7 +342,7 @@ int yyprevious = YYNEWLINE;
 
 unsigned char testbreak=0;
 
-yylook()
+int yylook(void)
 {
 	register struct yysvf *yystate, **lsp;
 	register struct yywork *yyt;
@@ -354,9 +354,9 @@ yylook()
 	int debug;
 # endif
 */
-	
+
 	char *yylastch;
-	
+
 	/* start off machines */
 
 /*
@@ -372,11 +372,11 @@ yylook()
 # else
 #define debug 0
 #endif
-	
+
 #ifdef YYDEBUG
 	fprintf(yyout,"yylook()\n");
 # endif
-	
+
 	if (!yymorfg)
 		yylastch = yytext;
 	else
@@ -388,7 +388,7 @@ yylook()
 #ifdef YYDEBUG
 	fprintf(yyout,"yylook: yymorfg=%d\n",yymorfg);
 # endif
-		
+
 	for(;;)
 	{
 #ifdef YYDEBUG
@@ -400,7 +400,7 @@ yylook()
 		if (yyprevious==YYNEWLINE) yystate++;
 
 		testbreak=0;
-		
+
 		for (;;)
 		{
 # ifdef LEXDEBUG
@@ -412,12 +412,12 @@ yylook()
 				exit(0);
 			}
 			testbreak++;
-			
+
 			yyt = yystate->yystoff;
 
 /*			fprintf(yyout,"yylook:   yyt offs: %02x\n",yyt-yycrank); */
 
-			
+
 			if(yyt == yycrank)
 			{		/* may not be any transitions */
 				yyz = yystate->yyother;
@@ -430,7 +430,7 @@ yylook()
 			fprintf(yyout,"yylook:   input ");
 			printchar("yych",yych);
 # endif
-			
+
 		tryagain:
 
 # ifdef LEXDEBUG
@@ -440,7 +440,7 @@ yylook()
 			yyr = yyt;
 
 /*			fprintf(yyout,"yylook:   yyr offs: %02x\n",yyr-yycrank); */
-			
+
 			if ( yyt > yycrank)
 			{
 				yyt = yyr + yych;
@@ -467,7 +467,7 @@ yylook()
 			}
 # ifdef YYOPTIM
 			else if(yyt < yycrank) /* r < yycrank */
-			{		
+			{
 				yyt = yyr = yycrank+(yycrank-yyt);
 # ifdef LEXDEBUG
 				fprintf(yyout,"yylook:   compressed state\n");
@@ -492,7 +492,7 @@ yylook()
 					fprintf(yyout,"yylook:   continue (2)\n");
 # endif
 					goto contin;
-					
+
 				}
 # ifdef LEXDEBUG
 /*
@@ -509,12 +509,12 @@ yylook()
 */
 				fprintf(yyout,"yylook:   try fall back character\n");
 # endif
-				if(yyt <= yytop && yyt->verify+yysvec == yystate) 
+				if(yyt <= yytop && yyt->verify+yysvec == yystate)
 				{
 # ifdef LEXDEBUG
 					fprintf(yyout,"yylook:   (2a)\n");
 # endif
-					
+
 					if(yyt->advance+yysvec == YYLERR)	/* error transition */
 					{
 # ifdef LEXDEBUG
@@ -531,7 +531,7 @@ yylook()
 					fprintf(yyout,"yylook:   continue (3)\n");
 # endif
 					goto contin;
-					
+
 				}
 # ifdef LEXDEBUG
 				fprintf(yyout,"yylook:   (2)\n");
@@ -578,7 +578,7 @@ yylook()
 			{
 				yyolsp = lsp;
 				if(yyextra[*yyfnd]) /* must backup */
-				{		
+				{
 					while(yyback((*lsp)->yystops,-*yyfnd) != 1 && lsp > yylstate)
 					{
 						lsp--;
@@ -630,9 +630,9 @@ yylook()
 # endif
 }
 
-	
-yyback(p, m)
-	int *p;
+
+int yyback(p, m)
+	int *p, m;
 {
 	if (p==0) return(0);
 	while (*p)
@@ -645,28 +645,28 @@ yyback(p, m)
 	return(0);
 }
 	/* the following are only used in the lex library */
-yyinput()
+int yyinput(void)
 {
 	int out=input();
-	
+
 #ifdef YYDEBUG
 	fprintf(yyout,"yylook:   input ");
 	printchar("out",out);
-#endif	
+#endif
 	return(out);
 }
-yyoutput(c)
-  int c; 
+void yyoutput(c)
+  int c;
 {
 	output(c);
 }
-yyunput(c)
-   int c; 
+void yyunput(c)
+   int c;
 {
 	unput(c);
 }
 
-main() 
+int main(void)
 {
         printf("main start\n");
         infile = fopen("yacc.in","rb");
@@ -681,8 +681,8 @@ main()
 }
 
 /* yyerror - issue error message */
-yyerror(s) 
-char *s; 
+void yyerror(s)
+char *s;
 {
         printf("[%s]\n", s);
 }
@@ -722,39 +722,39 @@ short yyact[]=
    0,   0,   0,   0,   0,   0,   0,   6,  14,   0,
    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   4,   6 
+   0,   0,   0,   0,   0,   0,   0,   4,   6
 };
 short yypact[]=
 {
 -1000,  -9,-1000,   5,  -7, -59,-1000,-1000,-1000, -40,
  -29, -40, -40,-1000,-1000, -40, -40, -40, -40, -38,
- -35, -38, -38,-1000,-1000,-1000 
+ -35, -38, -38,-1000,-1000,-1000
 };
 short yypgo[]=
 {
-   0,  21,  20,  17,  11 
+   0,  21,  20,  17,  11
 };
 short yyr1[]=
 {
    0,   1,   1,   1,   1,   2,   4,   4,   4,   4,
-   4,   4,   4,   4,   3 
+   4,   4,   4,   4,   3
 };
 short yyr2[]=
 {
    0,   0,   2,   3,   3,   3,   3,   3,   3,   3,
-   2,   3,   1,   1,   1 
+   2,   3,   1,   1,   1
 };
 short yychk[]=
 {
 -1000,  -1,  10,  -2, 256,  -3, 257,  10,  10,  61,
   -4,  45,  40,  -3, 258,  43,  45,  42,  47,  -4,
-  -4,  -4,  -4,  -4,  -4,  41 
+  -4,  -4,  -4,  -4,  -4,  41
 };
 short yydef[]=
 {
    1,  -2,   2,   0,   0,   0,  14,   3,   4,   0,
    5,   0,   0,  12,  13,   0,   0,   0,   0,  10,
-   0,   6,   7,   8,   9,  11 
+   0,   6,   7,   8,   9,  11
 };
 
 # define YYFLAG -1000
@@ -774,11 +774,11 @@ int yychar = -1; /* current input token number */
 int yynerrs = 0;  /* number of errors */
 short yyerrflag = 0;  /* error recovery flag */
 
-yyparse() 
+int yyparse(void)
 {
 	short yys[YYMAXDEPTH];
 	short yyj, yym;
-	register YYSTYPE *yypvt;
+	/* register YYSTYPE *yypvt; */
 	register short yystate, *yyps, yyn;
 	register YYSTYPE *yypv;
 	register short *yyxi;
@@ -820,23 +820,23 @@ yyparse()
 #ifdef YYDEBUG
 	 printf("yyparse: yynewstate (1)\n");
 #endif
-	
+
 	if( yychar<0 ) if( (yychar=yylex())<0 ) yychar=0;
 
 #ifdef YYDEBUG
-	 
+
 	printf("yyparse: yynewstate yyn=%d ",yyn);
 	printchar("yychar",yychar);
 #endif
-	
+
 	if( (yyn += yychar)<0 || yyn >= YYLAST ) goto yydefault;
 
 #ifdef YYDEBUG
 	 printf("yyparse: yynewstate (2)\n");
 #endif
-	
+
 	if( yychk[ yyn=yyact[ yyn ] ] == yychar ) /* valid shift */
-	{ 
+	{
 		yychar = -1;
 		yyval = yylval;
 		yystate = yyn;
@@ -872,16 +872,16 @@ yyparse()
 #ifdef YYDEBUG
 	 printf("yyparse: yyn=%d yyerrflag=%d\n",yyn,yyerrflag);
 #endif
-	
+
 	if( yyn == 0 ) /* error */
-	{ 
+	{
 		/* error ... attempt to resume parsing */
 
 		switch( yyerrflag ){
 		case 0:   /* brand new error */
 
 			yyerror( "yyparse: syntax error" );
-		yyerrlab:
+		/* yyerrlab: */
 			++yynerrs;
 
 		case 1:
@@ -934,7 +934,7 @@ yyparse()
 		printf("yyparse: reduce %d\n",yyn);
 #endif
 		yyps -= yyr2[yyn];
-		yypvt = yypv;
+		/* yypvt = yypv; */
 		yypv -= yyr2[yyn];
 		yyval = yypv[1];
 		yym=yyn;
@@ -942,65 +942,65 @@ yyparse()
 		yyn = yyr1[yyn];
 		yyj = yypgo[yyn] + *yyps + 1;
 		if( yyj>=YYLAST || yychk[ yystate = yyact[yyj] ] != -yyn ) yystate = yyact[yypgo[yyn]];
-		
+
 		switch(yym)
 		{
 			case 4:
-			{ 
-				yyerrok; 
+			{
+				yyerrok;
 			}
 			break;
 			case 5:
-			{ 
+			{
 				printf("[STORE]\n");
-			} 
+			}
 			break;
 			case 6:
-			{ 
+			{
 				printf("[ADD]\n");
-			} 
+			}
 			break;
 			case 7:
-			{ 
+			{
 				printf("[NEG]\n[ADD]\n");
-			} 
+			}
 			break;
 			case 8:
-			{ 
+			{
 				printf("[MUL]\n");
-			} 
+			}
 			break;
 			case 9:
-			{ 
+			{
 				printf("[DIV]\n");
-			} 
+			}
 			break;
 			case 10:
-			{ 
-				printf("[NEG]\n"); 
-			} 
+			{
+				printf("[NEG]\n");
+			}
 			break;
 			case 12:
-			{ 
-				printf("[LOAD]\n"); 
-			} 
+			{
+				printf("[LOAD]\n");
+			}
 			break;
 			case 13:
-			{ 	
+			{
 				printf("[PUSH %s]\n", yytext);
-			} 
+			}
 			break;
 			case 14:
-			{ 
+			{
 				printf("[%s]\n", yytext);
-			} 
+			}
 			break;
 		}
-		
+
 	goto yystack;  /* stack new state and value */
 }
-	
-int yywrap() 
-{ 
-	return 1; 
+
+int yywrap(void)
+{
+	return 1;
 }

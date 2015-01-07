@@ -45,7 +45,7 @@ struct defs {
 
 /*#include "cq26.c"*/ /* hardware check */
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
-s715f(int x,int y,int z);
+int s715f(int x,int y,int z);
 #endif
 
 #ifndef NO_OLD_FUNC_DECL
@@ -94,7 +94,7 @@ int s715(struct defs *pd0) {
    }
    return rc;
 }
-s715f(x,y,z)
+int s715f(x,y,z)
 int x, y, z;
 {
    return y;
@@ -121,14 +121,7 @@ int x, y, z;
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

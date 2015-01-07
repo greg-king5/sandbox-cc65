@@ -181,7 +181,7 @@ void subtest4(void)
 {
 	register short *yyps, yyn;
 
-	yyps=0x8004;
+	yyps=(short *)0x8004;
 	yyn=0;
 
 	while(yyn<14)
@@ -191,13 +191,13 @@ void subtest4(void)
 
 		yyn++;
 	}
-	printf("yyps: %04x\n",yyps);
+	printf("yyps: %04x\n",(unsigned)yyps);
 }
 
 #if 1
 
 int yylookret=10;
-yylook()
+int yylook(void)
 {
 	yylookret--;
 	return yylookret;

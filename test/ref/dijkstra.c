@@ -281,7 +281,7 @@ DIJKSTRA_EDGE *edge;
  */
 
 void Dijkstra_Path(DIJKSTRA_NODE *graph,DIJKSTRA_NODE *end){
-DIJKSTRA_NODE *currnode,*nextnode;
+DIJKSTRA_NODE *currnode;
 
     printf("Path from >%c< to >%c< : ",end->TAG,graph->TAG);
 

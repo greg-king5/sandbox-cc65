@@ -23,9 +23,9 @@ struct node
 };
 #endif
 
-print(char *fmt, ...);
+void print(char *fmt, ...);
 
-main()
+int main(void)
 {
 	print("test 1\n");
 	print("test %s\n", "2");
@@ -42,7 +42,7 @@ main()
 	return 0;
 }
 
-print(char *fmt, ...) {
+void print(char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	for (; *fmt; fmt++)

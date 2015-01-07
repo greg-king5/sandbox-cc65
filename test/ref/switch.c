@@ -8,15 +8,15 @@
 #include <limits.h>
 
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
-testbig();
-testbackslash();
-backslash(int c);
-f();
-g();
-h();
-limit();
+void testbig(void);
+void testbackslash(void);
+int backslash(int c);
+void f(void);
+void g(void);
+void h(void);
+void limit(void);
 
-big(
+void big(
 # ifdef ASSUME_32BIT_UNSIGNED
 	unsigned
 # else
@@ -26,7 +26,7 @@ x);
 
 #endif
 
-main()
+int main()
 {
 	testbackslash();
 	f();
@@ -38,7 +38,7 @@ main()
 	return 0;
 }
 
-testbig()
+void testbig(void)
 {
 	#ifdef ASSUME_32BIT_INT
     	int i;
@@ -57,7 +57,7 @@ testbig()
         static char _s[8]="bfnrtvx";
 #endif
 
-testbackslash()
+void testbackslash(void)
 {
         char *s;
 
@@ -73,7 +73,7 @@ testbackslash()
         }
 }
 
-backslash(c)
+int backslash(int c)
 {
 	switch (c)
     {
@@ -94,7 +94,7 @@ backslash(c)
 	return 'x';
 }
 
-f() {
+void f(void) {
 	int i, x = 0, y;
 
 	printf("f:\n");
@@ -116,7 +116,7 @@ f() {
 	}
 }
 
-g() {
+void g(void) {
 	int i;
 
 	printf("g:\n");
@@ -134,7 +134,7 @@ g() {
 	}
 }
 
-h()
+void h(void)
 {
 	int i, n=0;
 
@@ -159,9 +159,9 @@ h()
 }
 
 #ifdef NO_OLD_FUNC_DECL
-        big(
+        void big(
 #else
-        big(x)
+        void big(x)
 #endif
 
 # ifdef ASSUME_32BIT_UNSIGNED
@@ -192,7 +192,7 @@ h()
 	}
 }
 
-limit() {
+void limit(void) {
 	int i;
 
 	for (i = INT_MIN; i <= INT_MIN+5; i++)

@@ -63,7 +63,7 @@ s26(pd0)
 struct defs *pd0;
 {
 #else
-s26(struct defs *pd0) {
+int s26(struct defs *pd0) {
 #endif
    static char qs26[8] = "s26    ";
    char *ps, *pt;
@@ -167,9 +167,9 @@ int extvar;
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
 int s4(struct defs *pd0);
 int svtest(int n);
-zero();
-testev();
-setev();
+int zero(void);
+int testev(void);
+void setev(void);
 #endif
 
 #ifndef NO_OLD_FUNC_DECL
@@ -269,7 +269,7 @@ int n;
 int svtest(int n) {
 #endif
 
-   static k;
+   static int k;
    int rc;
    switch (n) {
      case 0: k = 1978;
@@ -289,14 +289,14 @@ int svtest(int n) {
    }
    return rc;
 }
-zero(){                 /* Returns a value of zero, possibly */
-   static k;            /* with side effects, as it's called */
+int zero(void){         /* Returns a value of zero, possibly */
+   static int k;        /* with side effects, as it's called */
    int rc;              /* alternately with svtest, above,   */
    k = 2;               /* and has the same internal storage */
    rc = 0;              /* requirements.                     */
    return rc;
 }
-testev(){
+int testev(void){
    if(extvar != 1066) return 1;
    else return 0;
 }
@@ -305,7 +305,7 @@ testev(){
 /* by s4, and should be compiled    */
 /* separately from s4.              */
 
-setev(){
+void setev(void){
 #ifndef NO_SLOPPY_EXTERN
    extern int extvar;
 #endif
@@ -333,14 +333,7 @@ setev(){
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

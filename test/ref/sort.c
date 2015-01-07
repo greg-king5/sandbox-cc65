@@ -11,7 +11,7 @@ int in[] = {10, 32, -1, 567, 3, 18, 1, -51, 789, 0};
 int *xx;
 
 /* exchange - exchange *x and *y */
-exchange(int *x,int *y) {
+void exchange(int *x,int *y) {
 int t;
 
 	printf("exchange(%d,%d)\n", x - xx, y - xx);
@@ -46,7 +46,7 @@ void quick(int a[], int lb, int ub) {
 }
 
 /* sort - sort a[0..n-1] into increasing order */
-sort(int a[], int n) {
+void sort(int a[], int n) {
 	quick(xx = a, 0, --n);
 }
 
@@ -62,7 +62,7 @@ void putd(int n) {
 }
 
 int main(void) {
-	int i;
+	unsigned i;
 
 	sort(in, (sizeof in)/(sizeof in[0]));
 	for (i = 0; i < (sizeof in)/(sizeof in[0]); i++) {

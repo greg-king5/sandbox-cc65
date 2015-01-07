@@ -48,7 +48,7 @@ struct odd {char a[3]; } y = {{'a', 'b', 0 }};
 struct odd {char a[3]; } y = {'a', 'b', 0};
 #endif
 
-odd(struct odd *y) {
+void odd(struct odd *y) {
         struct odd *x = y;
         printf("%s\n\r", x->a);
 }
@@ -174,8 +174,8 @@ point origin = { 0, 0 };
 point maxpt = { 320, 320 };
 #endif
 
-main() {
-int i;
+int main(void) {
+unsigned i;
 point x;
 rect screen;
 #ifndef NO_LOCAL_STRUCT_INIT
@@ -230,7 +230,7 @@ point pts[] = { -1, -1, 1, 1, 20, 300, 500, 400 };
 #else /* FUNCS_RETURN_STRUCTS */
 
 main() {
-int i;
+unsigned i;
 point x, origin = { 0, 0 }, maxpt = { 320, 320 };
 
 #ifdef NO_SLOPPY_STRUCT_INIT

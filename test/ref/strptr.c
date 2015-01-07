@@ -58,8 +58,6 @@ unsigned char temp;
 unsigned char i,ii;
 
 static struct Xdirent entry;
-unsigned char fd;
-static unsigned char ch;
 
 		entry.d_off=dir->off;
 
@@ -110,7 +108,6 @@ static unsigned char ch;
 
 int main(void)
 {
-char mydirname[XNAME_MAX+1]=".";
 XDIR mydir;
 struct Xdirent *mydirent;
 	

@@ -45,14 +45,14 @@ unsigned long _func1(unsigned long x,unsigned long y)
 
 int test1(void)
 {
-        fs=(_func1((fd/a),(_func1(2,0x0082c90f))));
+        return fs=(_func1((fd/a),(_func1(2,0x0082c90f))));
 }
 
 #define func(x,y)       _func1(x,y)
 
 int test2(void)
 {
-        fs=(func((fd/a),(func(2,0x0082c90f))));
+        return fs=(func((fd/a),(func(2,0x0082c90f))));
 }
 
 int main(void)

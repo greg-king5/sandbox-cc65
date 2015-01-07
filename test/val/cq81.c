@@ -44,9 +44,9 @@ struct defs {
      char rfs[8];        /* Return from section            */
 
 #ifdef NO_IMPLICIT_FUNC_PROTOTYPES
-regc();
-regp();
-regi();
+int regc(void);
+int regp(void);
+int regi(void);
 #endif
 
 #ifndef NO_OLD_FUNC_DECL
@@ -147,7 +147,7 @@ int s81(struct defs *pd0)
 
    return rc;
 }
-regc() {     /*   char to register assignment   */
+int regc(void) {     /*   char to register assignment   */
 /*   Testing a variable whose storage class has been spec-
 ified as "register" is somewhat tricky, but it can be done in a
 fairly reliable fashion by taking advantage of our knowledge of the
@@ -323,7 +323,7 @@ test is unreliable.              */
    if (s == 3) return 16-nr;
    else return -1;
 }
-regi() {     /*   int to register assignment    */
+int regi(void) {     /*   int to register assignment    */
 /*   Testing a variable whose storage class has been spec-
 ified as "register" is somewhat tricky, but it can be done in a
 fairly reliable fashion by taking advantage of our knowledge of the
@@ -500,7 +500,7 @@ test is unreliable.              */
    if (s == 3) return 16-nr;
    else return -1;
 }
-regp() {     /*   pointer to register assignment   */
+int regp(void) {     /*   pointer to register assignment   */
 /*   Testing a variable whose storage class has been spec-
 ified as "register" is somewhat tricky, but it can be done in a
 fairly reliable fashion by taking advantage of our knowledge of the
@@ -697,14 +697,7 @@ test is unreliable.              */
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

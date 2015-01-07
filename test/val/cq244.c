@@ -48,7 +48,7 @@ s244(pd0)
 struct defs *pd0;
 {
 #else
-s244(struct defs *pd0) {
+int s244(struct defs *pd0) {
 #endif
 
    #ifndef NO_FLOATS
@@ -129,14 +129,7 @@ s244(struct defs *pd0) {
         C REFERENCE MANUAL (main)
 */
 
-#ifndef NO_OLD_FUNC_DECL
-main(n,args)
-int n;
-char **args;
-{
-#else
-int main(int n,char **args) {
-#endif
+int main(void) {
 
 int j;
 static struct defs d0, *pd0;

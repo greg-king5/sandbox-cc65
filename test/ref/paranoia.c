@@ -8,7 +8,7 @@
 
 #ifdef NO_FLOATS
 
-main()
+int main(void)
 {
         printf("NO_FLOATS\n\r");
         return 0;

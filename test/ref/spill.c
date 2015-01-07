@@ -37,7 +37,7 @@ int main(void)
 
 int i;
 
-f4(){
+void f4(){
 register r6=0,r7=0,r8=0,r9=0,r10=0,r11=0;
         i=a[i]+b[i] && i && a[i]-b[i];
 }
@@ -50,7 +50,7 @@ int j, k, m, n;
         double *A, *B, x;
 #endif
 
-f5(){
+void f5(){
 	x=A[k*m]*A[j*m]+B[k*n]*B[j*n];
 	x=A[k*m]*B[j*n]-B[k*n]*A[j*m];
 }
