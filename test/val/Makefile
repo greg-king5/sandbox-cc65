@@ -22,7 +22,7 @@ WORKDIR := ../../testwrk
 .PHONY: all clean
 
 SOURCES := $(wildcard *.c)
-TESTS := $(foreach option,. .o. .os. .osi. .osir. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(option)prg))
+TESTS := $(foreach option,. .o. .os. .osi. .osir. .osr. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(option)prg))
 
 all: $(TESTS)
 
@@ -44,6 +44,10 @@ $(WORKDIR)/%.osi.prg: %.c
 
 $(WORKDIR)/%.osir.prg: %.c
 	$(CL65) -Osir $(CC65FLAGS) $< -o $@
+	$(SIM65) $(SIM65FLAGS) $@
+
+$(WORKDIR)/%.osr.prg: %.c
+	$(CL65) -Osr $(CC65FLAGS) $< -o $@
 	$(SIM65) $(SIM65FLAGS) $@
 
 $(WORKDIR)/%.oi.prg: %.c

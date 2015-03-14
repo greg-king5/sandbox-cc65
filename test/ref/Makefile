@@ -28,7 +28,7 @@ CFLAGS := -O2 -Wall -W -Wextra -fwrapv -fno-strict-overflow
 
 SOURCES := $(wildcard *.c)
 REFS := $(SOURCES:%.c=$(WORKDIR)/%.ref)
-TESTS := $(foreach option,. .o. .os. .osi. .osir. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(option)prg))
+TESTS := $(foreach opt,. .o. .os. .osi. .osir. .osr. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(opt)prg))
 
 all: $(REFS) $(TESTS)
 
@@ -36,45 +36,24 @@ $(WORKDIR)/%.ref: %.c
 	$(CC) $(CFLAGS) $< -o $(WORKDIR)/$*.host
 	$(WORKDIR)/$*.host > $@
 
-$(WORKDIR)/%.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
+# Currently, the yacc tests fail if stack operations are optimized. Therefore,
+# we prevent those particular optimizations when the yacc tests are built.
+$(WORKDIR)/yacc%.prg: CC65FLAGS += -Wc --disable-opt,OptStackOps
 
-$(WORKDIR)/%.o.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -O $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
+define test_prg
+$(eval option := $(1:.o%.=-O%))
 
-$(WORKDIR)/%.os.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Os $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
+# Remove the period (full stop) that passed through the above line.
+$(eval option := $(option:.=))
 
-$(WORKDIR)/%.osi.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Osi $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
+$$(WORKDIR)/%$(1)prg: %.c $$(WORKDIR)/%.ref
+	$$(CL65) $(option) $$(CC65FLAGS) $$< -o $$@
+	$$(SIM65) $$(SIM65FLAGS) $$@ > $$(WORKDIR)/$$*.out
+	$$(DIFF) $$(WORKDIR)/$$*.out $$(WORKDIR)/$$*.ref
+endef
 
-$(WORKDIR)/%.osir.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Osir $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
-
-$(WORKDIR)/%.oi.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Oi $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
-
-$(WORKDIR)/%.oir.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Oir $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
-
-$(WORKDIR)/%.or.prg: %.c $(WORKDIR)/%.ref
-	$(CL65) -Or $(CC65FLAGS) $< -o $@
-	$(SIM65) $(SIM65FLAGS) $@ > $(WORKDIR)/$*.out
-	$(DIFF) $(WORKDIR)/$*.out $(WORKDIR)/$*.ref
+# Create a separate rule for each of the possible ways to optimize a program.
+$(foreach opt,. .o. .os. .osi. .osir. .osr. .oi. .oir. .or.,$(eval $(call test_prg,$(opt))))
 
 clean:
 	@$(RM) $(TESTS)

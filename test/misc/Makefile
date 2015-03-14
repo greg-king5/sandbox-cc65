@@ -24,7 +24,7 @@ DIFF := $(WORKDIR)/bdiff
 .PHONY: all clean
 
 SOURCES := $(wildcard *.c)
-TESTS := $(foreach option,. .o. .os. .osi. .osir. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(option)prg))
+TESTS := $(foreach option,. .o. .os. .osi. .osir. .osr. .oi. .oir. .or.,$(SOURCES:%.c=$(WORKDIR)/%$(option)prg))
 
 all: $(TESTS)
 
