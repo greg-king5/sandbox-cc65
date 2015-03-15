@@ -50,7 +50,7 @@ $(WORKDIR)/sitest%prg: sitest.c
 	-$(CL65) $(subst .,,$(*:.o%=-O%)) $(CC65FLAGS) $< -o $@
 #	-$(SIM65) $(SIM65FLAGS) $@
 
-clean:
+mostly-clean clean:
 	@$(RM) $(TESTS)
 	@$(RM) $(SOURCES:.c=.o)
 	@$(RM) $(SOURCES:%.c=$(WORKDIR)/%.out)

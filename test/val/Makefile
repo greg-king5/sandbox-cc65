@@ -62,6 +62,6 @@ $(WORKDIR)/%.or.prg: %.c
 	$(CL65) -Or $(CC65FLAGS) $< -o $@
 	$(SIM65) $(SIM65FLAGS) $@
 
-clean:
+mostly-clean clean:
 	@$(RM) $(TESTS)
 	@$(RM) $(SOURCES:.c=.o)

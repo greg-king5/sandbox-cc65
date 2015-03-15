@@ -55,9 +55,11 @@ endef
 # Create a separate rule for each of the possible ways to optimize a program.
 $(foreach opt,. .o. .os. .osi. .osir. .osr. .oi. .oir. .or.,$(eval $(call test_prg,$(opt))))
 
-clean:
+mostly-clean:
 	@$(RM) $(TESTS)
 	@$(RM) $(SOURCES:.c=.o)
 	@$(RM) $(SOURCES:%.c=$(WORKDIR)/%.out)
+
+clean: mostly-clean
 	@$(RM) $(SOURCES:%.c=$(WORKDIR)/%.ref)
 	@$(RM) $(SOURCES:%.c=$(WORKDIR)/%.host)

@@ -44,11 +44,15 @@ continue: $(WORKDIR)/bdiff$(EXE)
 	@$(MAKE) -C misc all
 
 mostly-clean:
-	@$(MAKE) -C val clean
-	@$(MAKE) -C ref clean
-	@$(MAKE) -C err clean
-	@$(MAKE) -C misc clean
+	@$(MAKE) -C val $@
+	@$(MAKE) -C ref $@
+	@$(MAKE) -C err $@
+	@$(MAKE) -C misc $@
 
-clean: mostly-clean
-	$(RM) $(WORKDIR)/bdiff$(EXE)
+clean:
+	@$(RM) $(WORKDIR)/bdiff$(EXE)
+	@$(MAKE) -C val $@
+	@$(MAKE) -C ref $@
+	@$(MAKE) -C err $@
+	@$(MAKE) -C misc $@
 	$(RMDIR) $(WORKDIR)
