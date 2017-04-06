@@ -747,6 +747,7 @@ static void Usage (void)
             "  --force-import sym\t\tForce an import of symbol `sym'\n"
             "  --help\t\t\tHelp (this text)\n"
             "  --include-dir dir\t\tSet a compiler include directory path\n"
+            "  --inline-stdfuncs\t\tInline some known C functions\n"
             "  --ld-args options\t\tPass options to the linker\n"
             "  --lib file\t\t\tLink this library\n"
             "  --lib-path path\t\tSpecify a library search path\n"
@@ -1000,6 +1001,15 @@ static void OptIncludeDir (const char* Opt attribute ((unused)), const char* Arg
 /* Include directory (compiler) */
 {
     CmdAddArg2 (&CC65, "-I", Arg);
+}
+
+
+
+static void OptInlineStdFuncs (const char* Opt,
+                               const char* Arg attribute ((unused)))
+/* Handle the --inline-stdfuncs option */
+{
+    CmdAddArg (&CC65, Opt);
 }
 
 
@@ -1285,6 +1295,7 @@ int main (int argc, char* argv [])
         { "--force-import",      1, OptForceImport    },
         { "--help",              0, OptHelp           },
         { "--include-dir",       1, OptIncludeDir     },
+        { "--inline-stdfuncs",   0, OptInlineStdFuncs },
         { "--ld-args",           1, OptLdArgs         },
         { "--lib",               1, OptLib            },
         { "--lib-path",          1, OptLibPath        },

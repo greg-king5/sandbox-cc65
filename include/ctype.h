@@ -84,14 +84,15 @@ unsigned char __fastcall__ toascii (unsigned char c);
 
 
 
-/* When inlining-of-known-functions is enabled, overload most of the above
-** functions by macroes. The function prototypes are available again after
-** #undef'ing the macroes.
+/* When eager inlining-of-known-functions is enabled, overload most of the
+** above functions by macroes. The function prototypes are available again
+** after #undef'ing the macroes.
+**
 ** Please note that the following macroes do NOT handle EOF correctly, as
 ** stated in the manual. If you need correct behaviour for EOF, don't
-** use -Os, or #undefine the following macroes.
+** use --eagerly-inline-funcs, or #undefine the following macroes.
 */
-#ifdef __OPT_s__
+#ifdef __EAGERLY_INLINE__
 
 #define isalnum(c)  (__AX__ = (c),                      \
                     __asm__ ("tay"),                    \
@@ -180,6 +181,3 @@ unsigned char __fastcall__ toascii (unsigned char c);
 
 /* End of ctype.h */
 #endif
-
-
-

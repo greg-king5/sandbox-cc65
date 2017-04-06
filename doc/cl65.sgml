@@ -3,7 +3,7 @@
 <article>
 <title>cl65 Users Guide
 <author><url url="mailto:uz@cc65.org" name="Ullrich von Bassewitz">
-<date>01.08.2000, 27.11.2000, 02.10.2001
+<date>2017-04-05
 
 <abstract>
 cl65 is the compile &amp; link utility for cc65, the 6502 C compiler. It was
@@ -54,10 +54,10 @@ Short options:
   -L path                       Specify a library search path
   -Ln name                      Create a VICE label file
   -O                            Optimize code
-  -Oi                           Optimize code, inline functions
+  -Oi                           Optimize code, inline runtime functions
   -Or                           Optimize code, honour the register keyword
-  -Os                           Optimize code, inline known C funtions
-  -S                            Compile but don't assemble and link
+  -Os                           Optimize code, inline standard C functions
+  -S                            Compile, but don't assemble and link
   -T                            Include source as comment
   -V                            Print the version number
   -W name[,...]                 Supress compiler warnings
@@ -91,6 +91,7 @@ Long options:
   --force-import sym            Force an import of symbol `sym'
   --help                        Help (this text)
   --include-dir dir             Set a compiler include directory path
+  --inline-stdfuncs             Inline some standard C functions
   --ld-args options             Pass options to the linker
   --lib file                    Link this library
   --lib-path path               Specify a library search path
@@ -120,8 +121,8 @@ Long options:
 ---------------------------------------------------------------------------
 </verb></tscreen>
 
-Most of the options have the same meaning than the corresponding compiler,
-assembler or linker option. See the documentation for these tools for an
+Most of the options have the same meaning as the corresponding compiler,
+assembler, and linker options. See the documentation for those tools for an
 explanation. If an option is available for more than one of the tools, it
 is set for all tools, where it is available. One example for this is <tt/-v/:
 The compiler, the assembler and the linker are all called with the <tt/-v/

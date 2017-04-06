@@ -89,7 +89,6 @@ static struct StdFuncDesc {
     {   "strcmp",       StdFunc_strcmp          },
     {   "strcpy",       StdFunc_strcpy          },
     {   "strlen",       StdFunc_strlen          },
-
 };
 #define FUNC_COUNT      (sizeof (StdFuncs) / sizeof (StdFuncs[0]))
 
@@ -245,7 +244,6 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     g_call (CF_FIXARGC, Func_memcpy, ParamSize);
 
     if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal == 0) {
-
         /* memcpy has been called with a count argument of zero */
         Warning ("Call to memcpy has no effect");
 
@@ -283,7 +281,6 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* Generate memcpy code */
         if (Arg3.Expr.IVal <= 127) {
-
             AddCodeLine ("ldy #$%02X", (unsigned char) (Arg3.Expr.IVal-1));
             g_defcodelabel (Label);
             if (Reg2) {
@@ -298,9 +295,7 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
             }
             AddCodeLine ("dey");
             AddCodeLine ("bpl %s", LocalLabelName (Label));
-
         } else {
-
             AddCodeLine ("ldy #$00");
             g_defcodelabel (Label);
             if (Reg2) {
@@ -316,19 +311,16 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
             AddCodeLine ("iny");
             AddCmpCodeIfSizeNot256 ("cpy #$%02X", Arg3.Expr.IVal);
             AddCodeLine ("bne %s", LocalLabelName (Label));
-
         }
 
         /* memcpy returns the address, so the result is actually identical
         ** to the first argument.
         */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal <= 256 &&
                ED_IsRVal (&Arg2.Expr) && ED_IsLocConst (&Arg2.Expr) &&
                ED_IsRVal (&Arg1.Expr) && ED_IsLocStack (&Arg1.Expr) &&
                (Arg1.Expr.IVal - StackPtr) + Arg3.Expr.IVal < 256) {
-
         /* It is possible to just use one index register even if the stack
         ** offset is not zero, by adjusting the offset to the constant
         ** address accordingly. But we cannot do this if the data in
@@ -350,7 +342,6 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* Generate memcpy code */
         if (Arg3.Expr.IVal <= 127 && !AllowOneIndex) {
-
             if (Offs == 0) {
                 AddCodeLine ("ldy #$%02X", (unsigned char) (Offs + Arg3.Expr.IVal - 1));
                 g_defcodelabel (Label);
@@ -368,9 +359,7 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
                 AddCodeLine ("dex");
                 AddCodeLine ("bpl %s", LocalLabelName (Label));
             }
-
         } else {
-
             if (Offs == 0 || AllowOneIndex) {
                 AddCodeLine ("ldy #$%02X", (unsigned char) Offs);
                 g_defcodelabel (Label);
@@ -390,19 +379,16 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
                 AddCmpCodeIfSizeNot256 ("cpx #$%02X", Arg3.Expr.IVal);
                 AddCodeLine ("bne %s", LocalLabelName (Label));
             }
-
         }
 
         /* memcpy returns the address, so the result is actually identical
         ** to the first argument.
         */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal <= 256 &&
                ED_IsRVal (&Arg2.Expr) && ED_IsLocStack (&Arg2.Expr) &&
                (Arg2.Expr.IVal - StackPtr) + Arg3.Expr.IVal < 256 &&
                ED_IsRVal (&Arg1.Expr) && ED_IsLocConst (&Arg1.Expr)) {
-
         /* It is possible to just use one index register even if the stack
         ** offset is not zero, by adjusting the offset to the constant
         ** address accordingly. But we cannot do this if the data in
@@ -424,7 +410,6 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* Generate memcpy code */
         if (Arg3.Expr.IVal <= 127 && !AllowOneIndex) {
-
             if (Offs == 0) {
                 AddCodeLine ("ldy #$%02X", (unsigned char) (Arg3.Expr.IVal - 1));
                 g_defcodelabel (Label);
@@ -442,9 +427,7 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
                 AddCodeLine ("dex");
                 AddCodeLine ("bpl %s", LocalLabelName (Label));
             }
-
         } else {
-
             if (Offs == 0 || AllowOneIndex) {
                 AddCodeLine ("ldy #$%02X", (unsigned char) Offs);
                 g_defcodelabel (Label);
@@ -464,18 +447,15 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
                 AddCmpCodeIfSizeNot256 ("cpx #$%02X", Arg3.Expr.IVal);
                 AddCodeLine ("bne %s", LocalLabelName (Label));
             }
-
         }
 
         /* memcpy returns the address, so the result is actually identical
         ** to the first argument.
         */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal <= 256   &&
                ED_IsRVal (&Arg2.Expr) && ED_IsLocStack (&Arg2.Expr)     &&
                (Offs = ED_GetStackOffs (&Arg2.Expr, 0)) == 0) {
-
         /* Drop the generated code but leave the load of the first argument*/
         RemoveCode (&Arg1.Push);
 
@@ -508,9 +488,7 @@ static void StdFunc_memcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = GetFuncReturn (Expr->Type);
-
     } else {
-
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = GetFuncReturn (Expr->Type);
@@ -579,7 +557,6 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     g_call (CF_FIXARGC, MemSet? Func_memset : Func__bzero, ParamSize);
 
     if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal == 0) {
-
         /* memset has been called with a count argument of zero */
         Warning ("Call to memset has no effect");
 
@@ -619,7 +596,6 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* Generate memset code */
         if (Arg3.Expr.IVal <= 127) {
-
             AddCodeLine ("ldy #$%02X", (unsigned char) (Arg3.Expr.IVal-1));
             AddCodeLine ("lda #$%02X", (unsigned char) Arg2.Expr.IVal);
             g_defcodelabel (Label);
@@ -630,9 +606,7 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
             }
             AddCodeLine ("dey");
             AddCodeLine ("bpl %s", LocalLabelName (Label));
-
         } else {
-
             AddCodeLine ("ldy #$00");
             AddCodeLine ("lda #$%02X", (unsigned char) Arg2.Expr.IVal);
             g_defcodelabel (Label);
@@ -644,19 +618,16 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
             AddCodeLine ("iny");
             AddCmpCodeIfSizeNot256 ("cpy #$%02X", Arg3.Expr.IVal);
             AddCodeLine ("bne %s", LocalLabelName (Label));
-
         }
 
         /* memset returns the address, so the result is actually identical
         ** to the first argument.
         */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal <= 256 &&
                ED_IsConstAbsInt (&Arg2.Expr) &&
                ED_IsRVal (&Arg1.Expr) && ED_IsLocStack (&Arg1.Expr) &&
                (Arg1.Expr.IVal - StackPtr) + Arg3.Expr.IVal < 256) {
-
         /* Calculate the real stack offset */
         int Offs = ED_GetStackOffs (&Arg1.Expr, 0);
 
@@ -679,11 +650,9 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         ** to the first argument.
         */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsConstAbsInt (&Arg3.Expr) && Arg3.Expr.IVal <= 256 &&
                ED_IsConstAbsInt (&Arg2.Expr) &&
                (Arg2.Expr.IVal != 0 || IS_Get (&CodeSizeFactor) > 200)) {
-
         /* Remove all of the generated code but the load of the first
         ** argument.
         */
@@ -720,9 +689,7 @@ static void StdFunc_memset (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = GetFuncReturn (Expr->Type);
-
     } else {
-
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = GetFuncReturn (Expr->Type);
@@ -835,15 +802,12 @@ static void StdFunc_strcmp (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
             /* Fetch the first char */
             g_getind (CF_CHAR | CF_UNSIGNED, 0);
         }
-
     } else if ((IS_Get (&CodeSizeFactor) >= 165) &&
                ((ED_IsRVal (&Arg2.Expr) && ED_IsLocConst (&Arg2.Expr)) ||
                 (ED_IsLVal (&Arg2.Expr) && ED_IsLocRegister (&Arg2.Expr))) &&
                ((ED_IsRVal (&Arg1.Expr) && ED_IsLocConst (&Arg1.Expr)) ||
                 (ED_IsLVal (&Arg1.Expr) && ED_IsLocRegister (&Arg1.Expr))) &&
-               (IS_Get (&InlineStdFuncs) || (ECount1 > 0 && ECount1 < 256))) {
-
-
+               (IS_Get (&AllowEagerInline) || (ECount1 > 0 && ECount1 < 256))) {
         unsigned    Entry, Loop, Fin;   /* Labels */
         const char* Load;
         const char* Compare;
@@ -882,13 +846,10 @@ static void StdFunc_strcmp (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         AddCodeLine ("bcs %s", LocalLabelName (Fin));
         AddCodeLine ("ldx #$FF");
         g_defcodelabel (Fin);
-
     } else if ((IS_Get (&CodeSizeFactor) > 190) &&
                ((ED_IsRVal (&Arg2.Expr) && ED_IsLocConst (&Arg2.Expr)) ||
                 (ED_IsLVal (&Arg2.Expr) && ED_IsLocRegister (&Arg2.Expr))) &&
-               (IS_Get (&InlineStdFuncs) || (ECount1 > 0 && ECount1 < 256))) {
-
-
+               (IS_Get (&AllowEagerInline) || (ECount1 > 0 && ECount1 < 256))) {
         unsigned    Entry, Loop, Fin;   /* Labels */
         const char* Compare;
 
@@ -925,7 +886,6 @@ static void StdFunc_strcmp (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         AddCodeLine ("bcs %s", LocalLabelName (Fin));
         AddCodeLine ("ldx #$FF");
         g_defcodelabel (Fin);
-
     }
 
     /* The function result is an rvalue in the primary register */
@@ -992,7 +952,7 @@ static void StdFunc_strcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
          (ED_IsLVal (&Arg2.Expr) && ED_IsLocRegister (&Arg2.Expr))) &&
         ((ED_IsRVal (&Arg1.Expr) && ED_IsLocConst (&Arg1.Expr)) ||
          (ED_IsLVal (&Arg1.Expr) && ED_IsLocRegister (&Arg1.Expr))) &&
-        (IS_Get (&InlineStdFuncs) ||
+        (IS_Get (&AllowEagerInline) ||
         (ECount != UNSPECIFIED && ECount < 256))) {
 
         const char* Load;
@@ -1024,11 +984,9 @@ static void StdFunc_strcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* strcpy returns argument #1 */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsRVal (&Arg2.Expr) && ED_IsLocStack (&Arg2.Expr) &&
                StackPtr >= -255 &&
                ED_IsRVal (&Arg1.Expr) && ED_IsLocConst (&Arg1.Expr)) {
-
         /* It is possible to just use one index register even if the stack
         ** offset is not zero, by adjusting the offset to the constant
         ** address accordingly. But we cannot do this if the data in
@@ -1067,11 +1025,9 @@ static void StdFunc_strcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* strcpy returns argument #1 */
         *Expr = Arg1.Expr;
-
     } else if (ED_IsRVal (&Arg2.Expr) && ED_IsLocConst (&Arg2.Expr) &&
                ED_IsRVal (&Arg1.Expr) && ED_IsLocStack (&Arg1.Expr) &&
                StackPtr >= -255) {
-
         /* It is possible to just use one index register even if the stack
         ** offset is not zero, by adjusting the offset to the constant
         ** address accordingly. But we cannot do this if the data in
@@ -1110,13 +1066,10 @@ static void StdFunc_strcpy (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
 
         /* strcpy returns argument #1 */
         *Expr = Arg1.Expr;
-
     } else {
-
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = GetFuncReturn (Expr->Type);
-
     }
 
     /* We expect the closing brace */
@@ -1166,7 +1119,7 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         IsPtr  = IsTypePtr (Arg.Type);
     }
 
-    /* Check if the elements of an array can be addressed by a byte sized
+    /* Check if the elements of an array can be addressed by a byte-sized
     ** index. This is true if the size of the array is known and less than
     ** 256.
     */
@@ -1181,7 +1134,6 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     ** at runtime.
     */
     if (ED_IsLocLiteral (&Arg) && IS_Get (&WritableStrings) == 0) {
-
         /* Constant string literal */
         ED_MakeConstAbs (Expr, GetLiteralSize (Arg.LVal) - 1, type_size_t);
 
@@ -1193,8 +1145,7 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     ** 256, so the inlining is considered safe.
     */
     } else if (ED_IsLocConst (&Arg) && IsArray &&
-               (IS_Get (&InlineStdFuncs) || IsByteIndex)) {
-
+               (IS_Get (&AllowEagerInline) || IsByteIndex)) {
         /* Generate the strlen code */
         L = GetLocalLabel ();
         AddCodeLine ("ldy #$FF");
@@ -1214,7 +1165,6 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     */
     } else if (ED_IsLocStack (&Arg) && IsArray && IsByteIndex &&
                (Arg.IVal - StackPtr) + ECount < 256) {
-
         /* Calculate the true stack offset */
         int Offs = ED_GetStackOffs (&Arg, 0);
 
@@ -1239,8 +1189,7 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     ** big the buffer actually is, so inlining is not always safe.
     */
     } else if (ED_IsLocRegister (&Arg) && ED_IsLVal (&Arg) && IsPtr &&
-               IS_Get (&InlineStdFuncs)) {
-
+               IS_Get (&AllowEagerInline)) {
         /* Generate the strlen code */
         L = GetLocalLabel ();
         AddCodeLine ("ldy #$FF");
@@ -1259,8 +1208,7 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
     ** requested on the command line, and the code size factor is more than
     ** 400 (code is 13 bytes vs. 3 for a jsr call).
     */
-    } else if (IS_Get (&CodeSizeFactor) > 400 && IS_Get (&InlineStdFuncs)) {
-
+    } else if (IS_Get (&CodeSizeFactor) > 400 && IS_Get (&AllowEagerInline)) {
         /* Load the expression into the primary */
         LoadExpr (CF_NONE, &Arg);
 
@@ -1279,9 +1227,7 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = type_size_t;
-
     } else {
-
         /* Load the expression into the primary */
         LoadExpr (CF_NONE, &Arg);
 
@@ -1291,7 +1237,6 @@ static void StdFunc_strlen (FuncDesc* F attribute ((unused)), ExprDesc* Expr)
         /* The function result is an rvalue in the primary register */
         ED_MakeRValExpr (Expr);
         Expr->Type = type_size_t;
-
     }
 
     /* We expect the closing brace */

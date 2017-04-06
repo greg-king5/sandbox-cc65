@@ -61,7 +61,8 @@ extern unsigned         RegisterSpace;          /* Space available for register 
 /* Stackable options */
 extern IntStack         WritableStrings;        /* Literal strings are r/w */
 extern IntStack         LocalStrings;           /* Emit string literals immediately */
-extern IntStack         InlineStdFuncs;         /* Inline some known functions */
+extern IntStack         InlineStdFuncs;         /* Inline some standard functions */
+extern IntStack         AllowEagerInline;       /* Inline even where it might be unsafe */
 extern IntStack         EnableRegVars;          /* Enable register variables */
 extern IntStack         AllowRegVarAddr;        /* Allow taking addresses of register vars */
 extern IntStack         RegVarsToCallStack;     /* Save reg variables on call stack */

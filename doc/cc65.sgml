@@ -4,7 +4,7 @@
 <title>cc65 Users Guide
 <author><url url="mailto:uz@cc65.org" name="Ullrich von Bassewitz">,<newline>
 <url url="mailto:gregdk@users.sf.net" name="Greg King">
-<date>2017-03-21
+<date>2017-04-05
 
 <abstract>
 cc65 is a C compiler for 6502 targets. It supports several 6502 based home
@@ -57,8 +57,8 @@ Short options:
   -I dir                        Set an include directory search path
   -O                            Optimize code
   -Oi                           Optimize code, inline more code
-  -Or                           Enable register variables
-  -Os                           Inline some known functions
+  -Or                           Optimize, enable register variables
+  -Os                           Optimize, inline some standard functions
   -T                            Include source as comment
   -V                            Print the compiler version number
   -W warning[,...]              Suppress warnings
@@ -88,9 +88,11 @@ Long options:
   --debug-opt name              Debug optimization steps
   --dep-target target           Use this dependency target
   --disable-opt name            Disable an optimization step
+  --eagerly-inline-funcs        Inline some functions even if not known as safe
   --enable-opt name             Enable an optimization step
   --help                        Help (this text)
   --include-dir dir             Set an include directory search path
+  --inline-stdfuncs             Inline some standard functions
   --list-opt-steps              List all optimizer steps and exit
   --list-warnings               List available warning types for -W
   --local-strings               Emit string literals immediately
@@ -219,9 +221,64 @@ Here is a description of all the command line options:
   symbols in a special section in the object file.
 
 
+  <label id="option-eagerly-inline">
+  <tag><tt>--eagerly-inline-funcs</tt></tag>
+
+  Make the compiler try to inline some standard C library functions.  This switch
+  is like <tt/<ref id="option-inline-stdfuncs" name="--inline-stdfuncs">/;
+  but, it goes further.  cc65 will inline those functions even if it cannot be
+  certain that they won't see arrays/strings that are too long.  You should
+  use this option only if you can be sure about it.
+
+  This option will inline the <tt/is..()/ functions in <tt/&lt;ctype.h&gt;/
+  also.  But then, they won't work with values outside of the <tt/char/ range.
+  Again, if your program gives <tt/EOF/ to any of those functions, then don't
+  use this option.
+
+  The "eagerness" of this compiler setting can be changed within a source file by using
+  <tt/<ref id="pragma-allow-eager" name="#pragma&nbsp;allow-eager-inline">/.
+
+
   <tag><tt>-h, --help</tt></tag>
 
   Print the short option summary shown above.
+
+
+  <label id="option-inline-stdfuncs">
+  <tag><tt>--inline-stdfuncs</tt></tag>
+
+  Make the compiler try to inline these C library functions:
+  <itemize>
+  <item><tt/memcpy()/
+  <item><tt/memset()/
+  <item><tt/strcmp()/
+  <item><tt/strcpy()/
+  <item><tt/strlen()/
+  </itemize>
+
+  Notes:
+  <itemize>
+  <item>You may not use names of standard C functions for your own functions.
+        If you do that, your program is not standard-compliant anyway; but,
+        using <tt/--inline-stdfuncs/ actually will break things.
+        <p>
+  <item>The inlined string and memory functions cannot handle strings or
+        memory areas larger than 255 bytes.  Therefore, cc65 won't inline them
+        where it cannot know that the area is short enough.  In general, that
+        means that the length argument must be a constant, or that the
+        function call must refer to the area directly (not through a pointer);
+        and that its maximum size is determined at compile-time.
+  </itemize>
+
+  You can combine this setting with other optimizer settings by using the
+  <tt/<ref id="option-O" name="-O">/ switch.  <tt/-Os/ is the same as
+  <tt/-O&nbsp;--inline-stdfuncs/.  Therefore, <tt/-Ois/ will enable the
+  optimizer, convert internal calls to run-time functions into faster inline
+  code, and convert calls to the above C functions if cc65 is sure that it's
+  safe to do so.
+
+  The compiler setting also can be changed within a source file by using
+  <tt/<ref id="pragma-inline-stdfuncs" name="#pragma&nbsp;inline-stdfuncs">/.
 
 
   <label id="option-list-warnings">
@@ -444,24 +501,13 @@ Here is a description of all the command line options:
   name="--register-vars">/ command line option, and the <ref
   id="register-vars" name="discussion of register variables"> below.
 
-  Using <tt/-Os/ will force the compiler to inline some known functions from
-  the C library like strlen. Note: This has two consequences:
-  <p>
-  <itemize>
-  <item>You may not use names of standard C functions in your own code. If you
-     	do that, your program is not standard compliant anyway, but using
-     	<tt/-Os/ will actually break things.
-     	<p>
-  <item>The inlined string and memory functions will not handle strings or
-	memory areas larger than 255 bytes. Similarly, the inlined <tt/is..()/
-	functions will not work with values outside the char. range (such as
-	<tt/EOF/).
-     	<p>
-  </itemize>
-  <p>
+  Using <tt/-Os/ will make the compiler inline some standard functions from
+  the C library.  See the <tt/<ref id="option-inline-stdfuncs"
+  name="--inline-stdfuncs">/ switch for the details.
+
   It is possible to concatenate the modifiers for <tt/-O/. For example, to
-  enable register variables and inlining of known functions, you may use
-  <tt/-Ors/.
+  enable optimization, register variables, and inlining of known functions,
+  you may use <tt/-Ors/.
 
 
   <tag><tt>-T, --add-source</tt></tag>
@@ -861,6 +907,10 @@ The compiler defines several macros at startup:
 
   Is defined if the compiler was called with the <tt/-O/ command line option.
 
+  <tag><tt>__OPT_eager__</tt></tag>
+
+  Is defined if the compiler was called with the <tt/--eagerly-inline-funcs/ command-line option.
+
   <tag><tt>__OPT_i__</tt></tag>
 
   Is defined if the compiler was called with the <tt/-Oi/ command line option.
@@ -871,7 +921,7 @@ The compiler defines several macros at startup:
 
   <tag><tt>__OPT_s__</tt></tag>
 
-  Is defined if the compiler was called with the <tt/-Os/ command line option.
+  Is defined if the compiler was called with the <tt/-Os/ or <tt/--inline-stdfuncs/ command-line option.
 
   <tag><tt>__OSIC1P__</tt></tag>
 
@@ -1037,6 +1087,70 @@ parameter with the <tt/#pragma/.
   <tscreen><verb>
        	#pragma data-name ("MyDATA")
   </verb></tscreen>
+
+
+<sect1><tt>#pragma allow-eager-inline ([push,] on|off)</tt><label id="pragma-allow-eager"><p>
+
+  cc65 can substitute faster inline code for calls to some C library array
+  functions.  That inline code can handle only arrays that are smaller than
+  256 bytes.  Therefore, cc65 normally won't substitute if it cannot be sure
+  that the array is small enough.  This pragma can make cc65 ignore that
+  caution.
+
+  The default is "off", but may be changed by the <tt/<ref
+  id="option-eagerly-inline" name="--eagerly-inline-funcs">/ compiler
+  command-line option.  If the command-line switch has changed the default to
+  "on", then you can use the pragma to avoid substitution where it is risky,
+  while allowing it everywhere else.  This pragma doesn't control the inlining
+  of C functions; it controls how eagerly cc65 will do it (if something else
+  has enabled that feature).  Therefore, you can put this pragma permanently
+  into your source code without worrying about whether you will want to build
+  your program with or without inlining at some future time.
+
+  The <tt/#pragma/ understands the <tt/push/ and <tt/pop/ parameters, as
+  explained above.
+
+  Examples:
+  <tscreen><verb>
+  extern size_t opt_length;
+  extern char options[];
+  char buffer1[512], buffer2[512];
+  ...
+  ...
+  #pragma allow-eager-inline(push, on)
+      memset(options, 0, opt_length);
+  #pragma allow-eager-inline(pop)
+
+  #pragma allow-eager-inline(push, off)
+      memcpy(buffer2, buffer1, sizeof buffer1);
+  #pragma allow-eager-inline(pop)
+  </verb></tscreen>
+
+  No size is declared for <tt/options[]/; cc65 can't know whether it's safe or
+  not.  But, you do know that you never, ever will define that array with more
+  that 255 characters.  So, you can use the pragma to tell cc65 that it's OK
+  to convert the <tt/memset()/ call (if it's converting calls).
+
+  The call to <tt/memcpy()/ must never be converted, because <tt/buffer1[]/
+  is twice too big.  The pragma prevents cc65 from inlining that <tt/memcpy()/
+  call even if <tt/--eagerly-inline-funcs/ is used on cc65's command line.
+
+
+<sect1><tt>#pragma inline-stdfuncs ([push,] on|off)</tt><label id="pragma-inline-stdfuncs"><p>
+
+  cc65 can substitute faster inline code for calls to some C library array
+  functions.  This pragma can control that feature on an
+  expression-by-expression basis.
+
+  The default is "off", but may be changed by the <tt/<ref name="-Os"
+  id="option-O">/ and <tt/<ref id="option-inline-stdfuncs"
+  name="--inline-stdfuncs">/ compiler command-line options.  If a command-line
+  switch has changed the default to "on", then a programmer can use the pragma
+  to avoid substitution where a library call is desired, while allowing
+  substitution everywhere else.
+
+  The <tt/#pragma/ understands the <tt/push/ and <tt/pop/ parameters, as
+  explained above.
 
 
 <sect1><tt>#pragma local-strings ([push,] on|off)</tt><label id="pragma-local-strings"><p>

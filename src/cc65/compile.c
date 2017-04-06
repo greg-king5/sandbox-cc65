@@ -320,6 +320,7 @@ void Compile (const char* FileName)
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
+    const long CodeSize = IS_Get (&CodeSizeFactor);
 
     /* Add macros that are always defined */
     DefineNumericMacro ("__CC65__", GetVersionAsNumber ());
@@ -335,17 +336,19 @@ void Compile (const char* FileName)
     ** changes using #pragma later.
     */
     if (IS_Get (&Optimize)) {
-        long CodeSize = IS_Get (&CodeSizeFactor);
         DefineNumericMacro ("__OPT__", 1);
-        if (CodeSize > 100) {
-            DefineNumericMacro ("__OPT_i__", CodeSize);
-        }
-        if (IS_Get (&EnableRegVars)) {
-            DefineNumericMacro ("__OPT_r__", 1);
-        }
-        if (IS_Get (&InlineStdFuncs)) {
-            DefineNumericMacro ("__OPT_s__", 1);
-        }
+    }
+    if (CodeSize != 100) {
+        DefineNumericMacro ("__OPT_i__", CodeSize);
+    }
+    if (IS_Get (&EnableRegVars)) {
+        DefineNumericMacro ("__OPT_r__", 1);
+    }
+    if (IS_Get (&InlineStdFuncs)) {
+        DefineNumericMacro ("__OPT_s__", 1);
+    }
+    if (IS_Get (&AllowEagerInline)) {
+        DefineNumericMacro ("__EAGERLY_INLINE__", 1);
     }
 
     /* __TIME__ and __DATE__ macros */
