@@ -54,7 +54,7 @@ typedef unsigned long time_t;
 typedef unsigned long clock_t;
 typedef unsigned char clockid_t;
 
-/* Structure for broken down time */
+/* Structure for broken-down time */
 struct tm {
     int     tm_sec;
     int     tm_min;
@@ -75,10 +75,10 @@ struct timespec {
 
 /* Timezone representation, default is UTC */
 extern struct _timezone {
-    char    daylight;   /* True if daylight savings time active */
+    char    daylight;   /* True if daylight-saving time active */
     long    timezone;   /* Number of seconds behind UTC */
     char    tzname[5];  /* Name of timezone, e.g. CET */
-    char    dstname[5]; /* Name when daylight true, e.g. CEST */
+    char    dstname[5]; /* Name when daylight-saving true, e.g. CEST */
 } _tz;
 
 
@@ -109,6 +109,22 @@ clock_t _clocks_per_sec (void);
 #endif
 #define CLK_TCK                 CLOCKS_PER_SEC
 #define CLOCK_REALTIME          0
+
+
+
+#ifdef __CBM__
+void __fastcall__ _cbm_setdate (const struct tm* timep);
+/* Copies a broken-down date into an internal structure
+** that is used by time() in some Commodore libraries.
+*/
+void __fastcall__ _cbm_settime (struct tm* timep);
+/* Copies a broken-down time into the CIA time-of-day
+** registers that exist on some Commodore models.
+**
+** Copies a broken-down date into an internal structure
+** that is used by time() on those platforms.
+*/
+#endif
 
 
 
