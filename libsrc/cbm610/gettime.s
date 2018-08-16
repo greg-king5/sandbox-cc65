@@ -1,7 +1,7 @@
 ;
 ; 2009-07-27, Stefan Haubenthal
 ; 2009-09-24, Ullrich von Bassewitz
-; 2013-12-27, Greg King
+; 2014-07-11, Greg King
 ; 2018-08-14, Oliver Schmidt
 ;
 ; int clock_gettime (clockid_t clk_id, struct timespec *tp);
@@ -12,6 +12,7 @@
         .include        "extzp.inc"
         .macpack        generic
 
+        .export         current_tm_
         .import         pushax, pusheax, tosmul0ax, steaxspidx, incsp1
         .import         sys_bank, restore_bank
         .importzp       sreg, tmp1, tmp2
@@ -48,7 +49,7 @@
         cld
 
 AM:     jsr     BCD2dec
-is0:    cmp     TM + tm::tm_hour
+is0:    cmp     current_tm_ + tm::tm_hour
         bge     today
 
 ; The new time is less than the old time; therefore, the clock must have gone
@@ -56,17 +57,17 @@ is0:    cmp     TM + tm::tm_hour
 
         ;clc
         adc     #24
-today:  sta     TM + tm::tm_hour
+today:  sta     current_tm_ + tm::tm_hour
         ldy     #CIA::TODMIN
         lda     (cia),y
         jsr     BCD2dec
-        sta     TM + tm::tm_min
+        sta     current_tm_ + tm::tm_min
         ldy     #CIA::TODSEC
         lda     (cia),y
         jsr     BCD2dec
-        sta     TM + tm::tm_sec
-        lda     #<TM
-        ldx     #>TM
+        sta     current_tm_ + tm::tm_sec
+        lda     #<current_tm_
+        ldx     #>current_tm_
         jsr     _mktime
 
         ldy     #timespec::tv_sec
@@ -116,10 +117,12 @@ today:  sta     TM + tm::tm_hour
 .endproc
 
 ;----------------------------------------------------------------------------
-; TM struct with date set to 1970-01-01
+; The default date is 1970-01-01.
+
 .data
 
-TM:     .word   0               ; tm_sec
+current_tm_:
+        .word   0               ; tm_sec
         .word   0               ; tm_min
         .word   0               ; tm_hour
         .word   1               ; tm_mday
