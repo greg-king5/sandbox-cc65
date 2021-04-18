@@ -7,6 +7,9 @@
 
 .if .def(__CX16__)
   ; CX16 extended jump table
+  I2C_READ_BYTE                 := $FEC6
+  I2C_WRITE_BYTE                := $FEC9
+  CX_MONITOR                    := $FECC
   ENTROPY_GET                   := $FECF
   KEYBRD_BUF_PUT                := $FED2
   CONSOLE_SET_PAGE_MSG          := $FED5

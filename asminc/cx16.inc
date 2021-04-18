@@ -1,5 +1,5 @@
 ;
-; CX16 r38 definitions
+; CX16 r39 definitions
 ;
 
 ; ---------------------------------------------------------------------------
@@ -105,6 +105,10 @@ PI
 
 ; ---------------------------------------------------------------------------
 ; Zero page
+
+; Banking registers
+RAM_BANK        := $00
+ROM_BANK        := $01
 
 ; GEOS and graphics pseudo-registers
 .struct gREG
@@ -269,6 +273,42 @@ NMIVec          := $0318
 
 ; ---------------------------------------------------------------------------
 ; I/O locations
+
+; 65C22 Versatile Interface Adapter
+.struct VIA1                    ; Versatile Interface Adapter
+        .org    $9F00
+  PRB   .byte                   ; mouse, LED, VIC bus  (Port Register B)
+  PRA   .byte                   ; keyboard, controllers  (Port Register A)
+  DDRB  .byte                   ; (Data Direction Register B)
+  DDRA  .byte                   ; (Data Direction Register A)
+  T1    .word                   ; (Timer 1)
+  T1L   .word                   ; (Timer 1 Latch)
+  T2    .word                   ; (Timer 2)
+  SR    .byte                   ; (Shift Register)
+  ACR   .byte                   ; (Auxiliary Control Register)
+  PCR   .byte                   ; (Peripheral Control Register)
+  IFR   .byte                   ; (Interrupt Flags Register)
+  IER   .byte                   ; (Interrupt Enable Register)
+  PRA2  .byte                   ; keyboard, controllers  (PRA without handshake)
+.endstruct
+
+; 65C22 Versatile Interface Adapter
+.struct VIA2
+        .org    $9F10
+  PRB   .byte
+  PRA   .byte
+  DDRB  .byte
+  DDRA  .byte
+  T1    .word
+  T1L   .word
+  T2    .word
+  SR    .byte
+  ACR   .byte
+  PCR   .byte
+  IFR   .byte
+  IER   .byte
+  PRA2  .byte
+.endstruct
 
 ; Video Enhanced Retro Adapter
 ; Has audio and SPI.
@@ -498,43 +538,15 @@ NMIVec          := $0318
   .endstruct
 .endscope
 
-; 65C22
-.struct VIA1                    ; Versatile Interface Adapter
-        .org    $9F60
-  PRB   .byte                   ; ROM bank, IEC  (Port Register B)
-  PRA   .byte                   ; RAM bank  (Port Register A)
-  DDRB  .byte                   ; (Data Direction Register B)
-  DDRA  .byte                   ; (Data Direction Register A)
-  T1    .word                   ; (Timer 1)
-  T1L   .word                   ; (Timer 1 Latch)
-  T2    .word                   ; (Timer 2)
-  SR    .byte                   ; (Shift Register)
-  ACR   .byte                   ; (Auxiliary Control Register)
-  PCR   .byte                   ; (Peripheral Control Register)
-  IFR   .byte                   ; (Interrupt Flags Register)
-  IER   .byte                   ; (Interrupt Enable Register)
-  PRA2  .byte                   ; RAM bank  (Port Register A without handshaking)
+; YM2151 audio chip
+.struct YM2151
+                .org    $9F40
+  .union
+  STATUS        .byte
+  ADDR          .byte
+  .endunion
+  DATA          .byte
 .endstruct
-
-; 65C22
-.struct VIA2
-        .org    $9F70
-  PRB   .byte                   ; Mouse communication ?
-  PRA   .byte                   ; NES controller communication
-  DDRB  .byte
-  DDRA  .byte
-  T1    .word
-  T1L   .word
-  T2    .word
-  SR    .byte
-  ACR   .byte
-  PCR   .byte
-  IFR   .byte
-  IER   .byte
-  PRA2  .byte
-.endstruct
-
-; Real-Time Clock
 
 ; X16 Emulator device
 ; This device doesn't exist on the real machine.
@@ -557,7 +569,7 @@ NMIVec          := $0318
 ; Banked RAM and ROM
 
 KEY_COUNT       := $A00A        ; (bank 0) Number of keys in input buffer
-TIMER           := $A037        ; (bank 0) 60 Hz. timer (3 bytes, big-endian)
+TIMER           := $A03D        ; (bank 0) 60 Hz. timer (3 bytes, big-endian)
 
 .struct BANK
         .org    $A000

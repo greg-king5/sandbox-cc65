@@ -3,7 +3,7 @@
 /*                                  cx16.h                                   */
 /*                                                                           */
 /*                      CX16 system-specific definitions                     */
-/*                             For prerelease 38                             */
+/*                             For prerelease 39                             */
 /*                                                                           */
 /*                                                                           */
 /* This software is provided "as-is", without any expressed or implied       */
@@ -224,6 +224,13 @@ enum {
 
 /* Define hardware. */
 
+#define RAM_BANK        (*(unsigned char *)0x00)
+#define ROM_BANK        (*(unsigned char *)0x01)
+
+#include <_6522.h>
+#define VIA1    (*(volatile struct __6522 *)0x9F00)
+#define VIA2    (*(volatile struct __6522 *)0x9F10)
+
 /* A structure with the Video Enhanced Retro Adapter's external registers */
 struct __vera {
     unsigned short      address;        /* Address for data ports */
@@ -274,12 +281,15 @@ struct __vera {
 };
 #define VERA    (*(volatile struct __vera *)0x9F20)
 
-#include <_6522.h>
-#define VIA1    (*(volatile struct __6522 *)0x9F60)
-#define VIA2    (*(volatile struct __6522 *)0x9F70)
-
-#define RAM_BANK        (VIA1.pra)
-#define ROM_BANK        (VIA1.prb)
+/* Audio chip */
+struct __ym2151 {
+    union {
+        unsigned char   reg;            /* Register number for data */
+        unsigned char   status;         /* Busy flag */
+    };
+    unsigned char       data;
+};
+#define YM2151  (*(volatile struct __ym2151 *)0x9F40)
 
 /* A structure with the x16emu's settings registers */
 struct __emul {

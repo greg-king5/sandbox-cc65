@@ -200,14 +200,22 @@ access to hardware located in the address space. Some variables are
 structures, accessing the struct fields will access the chip registers.
 
 <descrip>
-  <tag><tt/VERA/</tag>
-  The <tt/VERA/ structure allows access
-  to the Video Enhanced Retro Adapter chip.
+
+  <tag><tt/RAM_BANK/</tag>
+  A register that controls which bank of high RAM is visible in the
+  <tt/BANK_RAM/ window.
+
+  <tag><tt/ROM_BANK/</tag>
+  A register that controls which bank of ROM is active at the moment.
 
   <tag><tt/VIA1, VIA2/</tag>
   Access to the two VIA (Versatile Interface Adapter) chips is available via
   the <tt/VIA1/ and <tt/VIA2/ variables. The structure behind those variables
   is explained in <tt/_6522.h/.
+
+  <tag><tt/VERA/</tag>
+  The <tt/VERA/ structure allows access
+  to the Video Enhanced Retro Adapter chip.
 
   <tag><tt/BANK_RAM/</tag>
   A character array that mirrors the eight-Kibibyte window, at &dollar;A000,
@@ -248,7 +256,7 @@ point to <tt/cx16-std.joy (cx16_std_joy)/.
 
 <descrip>
   <tag><tt/cx16-std.joy (cx16_std_joy)/</tag>
-  Supports up to two NES (and SNES) controllers connected to the joystick ports
+  Supports up to four SNES (and NES) controllers connected to the joystick ports
   of the CX16.  It reads the four directions, and the <bf/A/, <bf/B/,
   <bf/Select/, and <bf/Start/ buttons.  Buttons <bf/A/ and <bf/B/ are
   the first and second fire buttons.

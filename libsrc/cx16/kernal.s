@@ -1,11 +1,14 @@
 ;
-; 2020-04-27, Greg King
+; 2021-04-08, Greg King
 ;
 ; CX16 Kernal functions
 ;
 
         .include        "cbm_kernal.inc"
 
+        .export I2C_READ_BYTE
+        .export I2C_WRITE_BYTE
+        .export CX_MONITOR
         .export ENTROPY_GET
         .export KEYBRD_BUF_PUT
         .export CONSOLE_SET_PAGE_MSG
