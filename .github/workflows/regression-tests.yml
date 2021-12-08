@@ -1,0 +1,38 @@
+name: Build and test for regressions
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    name: Build and Test on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Linuxdoc Tools and a Windows cross-compiler.
+        run: |
+          #sudo apt-get update
+          sudo apt-get install linuxdoc-tools linuxdoc-tools-info gcc-mingw-w64-i686
+      - name: Get cc65's files.
+        uses: actions/checkout@v2
+      - name: Build the tools.
+        run: make -j2 bin USER_CFLAGS=-Werror
+      - name: Build the platform libraries.
+        run: make -j2 lib QUIET=1
+      - name: Run the regression tests.
+        run: make test QUIET=1
+      - name: Test that the samples can be built.
+        run: make -j2 samples
+      - name: Build the document files.
+        run: make -j2 doc
+      - name: Build Windows versions of the tools.
+        run: |
+          make -C src clean
+          make -j2 bin USER_CFLAGS=-Werror CROSS_COMPILE=i686-w64-mingw32-
+      - name: Build the Windows cc65 package.
+        run: make zip
+
+      - name: Create a Windows prerelease.
+        if: github.event_name == 'push'
+        run: |
+          echo 'Will prerelease something someday.'
+          #echo make -f Makefile.travis
