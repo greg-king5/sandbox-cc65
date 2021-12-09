@@ -1,5 +1,9 @@
 name: Build and test for regressions
 on:
+  push:
+    branches: [master]
+  pull-request:
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +14,8 @@ jobs:
     steps:
       - name: Install Linuxdoc Tools and a Windows cross-compiler.
         run: |
-          #sudo apt-get update
+          sudo apt-get update
+          sudo apt-get full-upgrade
           sudo apt-get install linuxdoc-tools linuxdoc-tools-info gcc-mingw-w64-i686
       - name: Get cc65's files.
         uses: actions/checkout@v2

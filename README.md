@@ -1,3 +1,5 @@
+[![Build and test for regressions](https://github.com/greg-king5/sandbox-cc65/actions/workflows/regression-tests.yml/badge.svg)](https://github.com/greg-king5/sandbox-cc65/actions/workflows/regression-tests.yml)
+
 [Windows Snapshot](https://sourceforge.net/projects/cc65/files/cc65-snapshot-win32.zip)
 
 [Documentation](https://cc65.github.io/doc)
