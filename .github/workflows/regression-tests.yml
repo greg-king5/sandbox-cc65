@@ -16,7 +16,7 @@ jobs:
         run: 
           sudo apt-get install linuxdoc-tools linuxdoc-tools-info gcc-mingw-w64-i686 gcc-mingw-w64-x86_64
       - name: Get cc65's files.
-        uses: actions/checkout
+        uses: actions/checkout@latest
       - name: Build the tools.
         run: make -j2 bin USER_CFLAGS=-Werror
       - name: Build the platform libraries.
