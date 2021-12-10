@@ -13,12 +13,10 @@ jobs:
 
     steps:
       - name: Install Linuxdoc Tools and a Windows cross-compiler.
-        run: |
-          sudo apt-get update
-          sudo apt-get full-upgrade
-          sudo apt-get install linuxdoc-tools linuxdoc-tools-info gcc-mingw-w64-i686
+        run: 
+	sudo apt-get install linuxdoc-tools linuxdoc-tools-info gcc-mingw-w64-i686 gcc-mingw-w64-x86_64
       - name: Get cc65's files.
-        uses: actions/checkout@v2
+        uses: actions/checkout
       - name: Build the tools.
         run: make -j2 bin USER_CFLAGS=-Werror
       - name: Build the platform libraries.
@@ -29,7 +27,11 @@ jobs:
         run: make -j2 samples
       - name: Build the document files.
         run: make -j2 doc
-      - name: Build Windows versions of the tools.
+      - name: Build 64-bit Windows versions of the tools.
+        run: |
+          make -C src clean
+          make -j2 bin USER_CFLAGS=-Werror CROSS_COMPILE=x86_64-w64-mingw32-
+      - name: Build 32-bit Windows versions of the tools.
         run: |
           make -C src clean
           make -j2 bin USER_CFLAGS=-Werror CROSS_COMPILE=i686-w64-mingw32-
